@@ -39,9 +39,9 @@ class handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(bytes(challenge, "utf8"))
         elif "event" in body_as_json:
-            event = body_as_json["event"]["type"]
-            print(event)
-            if body_as_json["event"]["type"] == "app_mention":
+            event = body_as_json["event"]
+            print(event["type"])
+            if event["type"] == "app_mention":
                 print("handling @mention")
                 mentionHandler(channel_ID, event["text"], event["user"])
         else:
