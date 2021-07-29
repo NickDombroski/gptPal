@@ -15,7 +15,8 @@ def sendMessageInChannel(channel, message):
     )
 
 # Handles when a user mentions the bot
-def mentionHandler(channel, message):
+def mentionHandler(channel, message, user):
+    message = message.replace('@gpt-bot', "no u @"+user)
     sendMessageInChannel(channel, message)
 
 class handler(BaseHTTPRequestHandler):
@@ -38,10 +39,11 @@ class handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(bytes(challenge, "utf8"))
         elif "event" in body_as_json:
-            print(body_as_json["event"]["type"])
+            event = body_as_json["event"]["type"]
+            print(event)
             if body_as_json["event"]["type"] == "app_mention":
                 print("handling @mention")
-                mentionHandler(channel_ID, body_as_json["event"]["text"])
+                mentionHandler(channel_ID, event["text"], event["user"])
         else:
             print("no match")
 
