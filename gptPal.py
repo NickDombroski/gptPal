@@ -16,7 +16,7 @@ def sendMessageInChannel(channel, message):
 
 # Handles when a user mentions the bot
 def mentionHandler(channel, message, user):
-    message = message.replace('@gpt-bot', "no u @"+user)
+    message = message.replace('@gpt-Pal', "no u @"+user)
     sendMessageInChannel(channel, message)
 
 class handler(BaseHTTPRequestHandler):
