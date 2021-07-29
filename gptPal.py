@@ -17,7 +17,8 @@ def sendMessageInChannel(channel, message):
     )
     return response["message"]["text"]
 
-def messageHandler(channel, message):
+# Handles when a user mentions the bot
+def mentionHandler(channel, message):
     sendMessageInChannel(channel, message)
 
 class handler(BaseHTTPRequestHandler):
@@ -40,8 +41,8 @@ class handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(bytes(challenge, "utf8"))
         elif "event" in body_as_json:
-            if body_as_json["event"]["type"] == "message":
-                messageHandler(channel_ID, body_as_json["event"]["text"])
+            if body_as_json["event"]["type"] == "app_mention":
+                mentionHandler(channel_ID, body_as_json["event"]["text"])
         else:
             print("no match")
 
