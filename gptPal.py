@@ -9,13 +9,12 @@ client = WebClient(token=os.environ['SLACK_API_TOKEN'])
 # Sends the given message text in the given channel
 # Returns the message value for confirmation
 def sendMessageInChannel(channel, message):
-    channel_ID = "C029UL7GFR7"
     client = WebClient(token=os.environ['SLACK_API_TOKEN'])
     response = client.chat_postMessage(
         channel=channel,
         text=message
     )
-    return response["message"]["text"]
+    #return response["message"]["text"]
 
 # Handles when a user mentions the bot
 def mentionHandler(channel, message):
@@ -41,6 +40,7 @@ class handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(bytes(challenge, "utf8"))
         elif "event" in body_as_json:
+            print("handling @mention")
             if body_as_json["event"]["type"] == "app_mention":
                 mentionHandler(channel_ID, body_as_json["event"]["text"])
         else:
