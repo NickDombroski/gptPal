@@ -4,6 +4,7 @@ from slack_sdk import WebClient
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 channel_ID = "C029UL7GFR7"
+bot_user_ID = "U029MFZNYBW"
 client = WebClient(token=os.environ['SLACK_API_TOKEN'])
 
 # Sends the given message text in the given channel
@@ -16,7 +17,7 @@ def sendMessageInChannel(channel, message):
 
 # Handles when a user mentions the bot
 def mentionHandler(channel, message, user):
-    message = message.replace('@gpt-Pal', "no u @"+user)
+    message = message.replace('<@'+bot_user_ID+'>', 'no u <@'+user+'>')
     sendMessageInChannel(channel, message)
 
 class handler(BaseHTTPRequestHandler):
