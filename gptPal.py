@@ -63,7 +63,7 @@ class handler(BaseHTTPRequestHandler):
             elif event["type"] == "app_mention":
                 logger.info("handling @mention [%s]", event_id)
                 val = MLHandler(event["text"])
-                logger.info("Reponding with %s", val)
+                logger.info("Reponding with" + val)
                 mentionHandler(channel_ID, val, event["user"])
         else:
             logger.info("no match")
