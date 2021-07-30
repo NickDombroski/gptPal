@@ -1,15 +1,21 @@
 import os
 import json
+import logging
 import redis
 from ml import MLHandler
 from slack_sdk import WebClient
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from cysystemd.journal import JournaldLogHandler
 
 channel_ID = "C029UL7GFR7"
 bot_user_ID = "U029MFZNYBW"
 client = WebClient(token=os.environ['SLACK_API_TOKEN'])
 r = redis.Redis(host='localhost', port=6379, db=0)
 event_ids_key = "events"
+
+logger = logging.getLogger("gptPal")
+logger.addHandler(JournaldLogHandler())
+logger.setLevel(logging.INFO)
 
 # Sends the given message text in the given channel
 def sendMessageInChannel(channel, message):
@@ -46,18 +52,18 @@ class handler(BaseHTTPRequestHandler):
             self.wfile.write(bytes(challenge, "utf8"))
         elif "event" in body_as_json:
             event = body_as_json["event"]
-            print(event["type"])
+            logger.info(event["type"])
 
             added_cnt = r.sadd(event_ids_key, body_as_json["event_id"])
             if added_cnt == 0:
-                print("event already exists")
+                logger.info("event already exists")
             elif event["type"] == "app_mention":
-                print("handling @mention")
+                logger.info("handling @mention")
                 val = MLHandler(event["text"])
-                print("Reponding with ", val)
+                logger.info("Reponding with ", val)
                 mentionHandler(channel_ID, val, event["user"])
         else:
-            print("no match")
+            logger.info("no match")
 
 
 
