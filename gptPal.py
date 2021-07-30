@@ -1,6 +1,7 @@
 import os
 import json
 import redis
+from ml import MLHandler
 from slack_sdk import WebClient
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
@@ -52,7 +53,9 @@ class handler(BaseHTTPRequestHandler):
                 print("event already exists")
             elif event["type"] == "app_mention":
                 print("handling @mention")
-                mentionHandler(channel_ID, event["text"], event["user"])
+                val = MLHandler(event["text"])
+                print("Reponding with ", val)
+                mentionHandler(channel_ID, val, event["user"])
         else:
             print("no match")
 
