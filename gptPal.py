@@ -47,8 +47,8 @@ class handler(BaseHTTPRequestHandler):
             event = body_as_json["event"]
             print(event["type"])
 
-            set_added_cnt = r.sadd(event_ids_key, body_as_json["event_id"])
-            if set_added_cnt == 0:
+            added_cnt = r.sadd(event_ids_key, body_as_json["event_id"])
+            if added_cnt == 0:
                 print("event already exists")
             elif event["type"] == "app_mention":
                 print("handling @mention")
