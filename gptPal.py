@@ -15,7 +15,7 @@ event_ids_key = "events"
 
 logger = logging.getLogger("gptPal")
 logger.addHandler(JournaldLogHandler())
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 # Sends the given message text in the given channel
 def sendMessageInChannel(channel, message):
@@ -44,6 +44,8 @@ class handler(BaseHTTPRequestHandler):
         post_body = self.rfile.read(content_len)
         body_as_json = json.loads(post_body.decode("utf-8"))
 
+        logger.debug(body_as_json)
+
         if "challenge" in body_as_json:
             challenge = (body_as_json["challenge"])
             self.send_response(200)
@@ -54,11 +56,12 @@ class handler(BaseHTTPRequestHandler):
             event = body_as_json["event"]
             logger.info(event["type"])
 
-            added_cnt = r.sadd(event_ids_key, body_as_json["event_id"])
+            event_id = body_as_json["event_id"]
+            added_cnt = r.sadd(event_ids_key, event_id)
             if added_cnt == 0:
-                logger.info("event already exists")
+                logger.info("event already exists [%s]", event_id)
             elif event["type"] == "app_mention":
-                logger.info("handling @mention")
+                logger.info("handling @mention [%s]", event_id)
                 val = MLHandler(event["text"])
                 logger.info("Reponding with ", val)
                 mentionHandler(channel_ID, val, event["user"])
