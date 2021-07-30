@@ -15,7 +15,7 @@ event_ids_key = "events"
 
 logger = logging.getLogger("gptPal")
 logger.addHandler(JournaldLogHandler())
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 # Sends the given message text in the given channel
 def sendMessageInChannel(channel, message):
@@ -54,9 +54,9 @@ class handler(BaseHTTPRequestHandler):
             self.wfile.write(bytes(challenge, "utf8"))
         elif "event" in body_as_json:
             event = body_as_json["event"]
-            logger.info(event["type"])
 
             event_id = body_as_json["event_id"]
+            logger.info("event.type: %s event_id: %s", event["type"], event_id)
             added_cnt = r.sadd(event_ids_key, event_id)
             if added_cnt == 0:
                 logger.info("event already exists [%s]", event_id)
