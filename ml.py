@@ -9,10 +9,10 @@ load_dotenv()
 openai.api_key = os.environ["OPEN_AI"]
 
 #generateTLDR generates a summary of the article
-def generateTLDR(prompt):
+def makeGPTRequest(prompt):
   response = openai.Completion.create(
   engine="davinci",
-  prompt= prompt + '\ntl;dr:',
+  prompt=prompt,
   temperature=0.3,
   max_tokens=60,
   top_p=1.0,
@@ -38,8 +38,8 @@ def MLHandler(message):
   urls = getURLS(message)
   temp = ""
   if not urls:
-      return generateTLDR(message)
+      return makeGPTRequest(message)
   else:
       for i, siteStr in enumerate([urlToText(URL) for URL in urls]):
-          temp = temp + 'Summarizing ' + urls[i] + ': \n' + generateTLDR(siteStr) + '\n'
+          temp = temp + 'Summarizing ' + urls[i] + ': \n' + makeGPTRequest(siteStr + "\ntl;dr") + '\n'
       return temp
