@@ -5,7 +5,7 @@ import redis
 from ml import MLHandler
 from slack_sdk import WebClient
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from systemd.journal import JournalHandler
+from systemd.journal import JournaldLogHandler
 
 channel_ID = "C029UL7GFR7"
 bot_user_ID = "U029MFZNYBW"
@@ -14,8 +14,11 @@ r = redis.Redis(host='localhost', port=6379, db=0)
 event_ids_key = "events"
 
 logger = logging.getLogger(__name__)
-logger.addHandler(JournalHandler())
-logger.setLevel(logging.INFO)
+journald_handler = JournaldLogHandler()
+
+journald_handler.setFormatter(logging.Formatter(
+    '[%(levelname)s] %(message)s'
+))
 
 # Sends the given message text in the given channel
 def sendMessageInChannel(channel, message):
